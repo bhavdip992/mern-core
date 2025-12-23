@@ -23,25 +23,31 @@ export default function TodoPage() {
     }
     const updateTodo = async (id: string, title: string) => {
         const res = await api.updateTodos(id, { title });
-        const newRes = await api.fetchTodos()
-        setTodos([...newRes.data])
-        setTitle('');
+        if (res.status == 200) {
+            const newRes = await api.fetchTodos()
+            setTodos([...newRes.data])
+            setTitle('');
+            setEditTodoId('');
+            setEditTitle('');
+        }
         setEditModelOpen(false);
-        setEditTodoId('');
-        setEditTitle('')
     }
 
     const deleteTodo = async (id: string) => {
         const res = await api.deleteTodos(id);
-        const newRes = await api.fetchTodos()
-        setTodos([...newRes.data])
+        if (res.status == 200) {
+            const newRes = await api.fetchTodos()
+            setTodos([...newRes.data])
+        }
         setDeleteModelOpen(false);
     }
 
     const markedDone = async (id: string, completed: boolean) => {
         const res = await api.updateTodos(id, { completed });
-        const newRes = await api.fetchTodos()
-        setTodos([...newRes.data])
+        if (res.status == 200) {
+            const newRes = await api.fetchTodos()
+            setTodos([...newRes.data])
+        }
     }
 
     return (
