@@ -1,9 +1,11 @@
-import { useEffect, useState, type FormEvent } from "react"
+import React, { useEffect, useState, type FormEvent } from "react"
 import NoteCard from "../components/NoteCard"
 import type { Note } from "../types/note"
 import * as api from "../services/note.api"
+import { useNavigate } from "react-router-dom"
 
 export default function TodoPage() {
+    const navigate = useNavigate();
     const [notes, setNotes] = useState<Note[]>([]);
     const [title, setTitle] = useState('');
     const [query, setQuery] = useState('');
@@ -84,7 +86,23 @@ export default function TodoPage() {
     return (
         <div className="min-h-screen bg-gray-100 p-6">
             <div className="max-w-7xl mx-auto">
-                <h1 className="text-2xl font-bold mb-4">Notes App</h1>
+                <div className="flex justify-between">
+                    <h1 className="text-2xl font-bold mb-4">Notes App</h1>
+                    <button className="profile-icon p-1" onClick={(e) => navigate('/profile')}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            className="w-6 h-6"
+                        >
+                            <circle cx="12" cy="8" r="4" />
+                            <path d="M4 20c0-4 4-6 8-6s8 2 8 6" />
+                        </svg>
+
+                    </button>
+                </div>
                 <label htmlFor="search" className="font-bold">Search Note</label>
                 <div className="search-wrap bg-white p-4 rounded-lg mb-6 flex items-center gap-2 align-top">
                     <div className="relative w-full">
@@ -134,17 +152,32 @@ export default function TodoPage() {
                     </div> : ''}
 
                 {/* Notes Grid */}
-                <span className="font-bold">Notes List</span>
-                <div className="grid md:grid-cols-3 gap-4">
-                    {notes.map(note => (
-                        <NoteCard
-                            key={note._id}
-                            note={note}
-                            onEdit={() => { setEditNoteId(note._id); setEditTitle(note.title); setEditContent(note.content); setEditCategory(note.category || ''); setModalOpen(true); }}
-                            onDelete={() => deleteNote(note._id)}
-                            onComplete={() => completeNote(note._id, true)}
-                        />
-                    ))}
+                <div className="space-y-10">
+                    <span className="font-bold">Notes List</span>
+                    <div className="grid md:grid-cols-3 gap-4">
+                        {notes?.filter((note) => { if (note?.completed == false) return note }).map(note => (
+                            <NoteCard
+                                key={note._id}
+                                note={note}
+                                onEdit={() => { setEditNoteId(note._id); setEditTitle(note.title); setEditContent(note.content); setEditCategory(note.category || ''); setModalOpen(true); }}
+                                onDelete={() => deleteNote(note._id)}
+                                onComplete={() => completeNote(note._id, true)}
+                            />
+                        ))}
+                    </div>
+                    {/*Completed Notes Grid */}
+                    <span className="font-bold">Completed Notes List</span>
+                    <div className="grid md:grid-cols-3 gap-4">
+                        {notes?.filter((note) => { if (note?.completed == true) return note; }).map(note => (
+                            <NoteCard
+                                key={note._id}
+                                note={note}
+                                onEdit={() => { setEditNoteId(note._id); setEditTitle(note.title); setEditContent(note.content); setEditCategory(note.category || ''); setModalOpen(true); }}
+                                onDelete={() => deleteNote(note._id)}
+                                onComplete={() => completeNote(note._id, true)}
+                            />
+                        ))}
+                    </div>
                 </div>
                 {/* update modal */}
                 {isModalOpen && (
@@ -202,7 +235,7 @@ export default function TodoPage() {
                 )}
 
             </div>
-        </div>
+        </div >
     )
 
 
