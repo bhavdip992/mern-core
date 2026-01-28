@@ -1,2 +1,3 @@
 # mern-core
-This repository is for development of core mern stack project  
+A full-stack notes taking application built with TypeScript, React, Express, and MongoDB. Create, read, update, and delete notes with an intuitive UI powered by Tailwind CSS.
+
